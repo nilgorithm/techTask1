@@ -13,7 +13,7 @@ special_period = [PERIOD[i] +' - '+ PERIOD[i+1] for i in range(len(PERIOD)-1)]
 [special_period.insert(i, 'Amount') for i in range(len(special_period), 0, -1)]
 
 with open('res.csv', 'w', newline='') as f:
-    writer = csv.writer(f)
+    writer = csv.writer(f, delimiter=';')
     writer.writerows([SPECIAL_HAT+PERIOD*2+['-','-']+special_period])
 
 for comp in progress.bar(sorted(COMPANIES)):
@@ -46,9 +46,11 @@ for comp in progress.bar(sorted(COMPANIES)):
             else:
                 temp_p.append(None)
                 temp_t.append(None)
+        if temp_p!=[None]*len(temp_t):
+            tab_1.append(info+temp_p)
+            tab_2.append(temp_t)
 
-        tab_1.append(info+temp_p)
-        tab_2.append(temp_t)
+        
 
         for payment in temp['not_base']:
             more_temps_p_ex = []
@@ -60,8 +62,10 @@ for comp in progress.bar(sorted(COMPANIES)):
                 else:
                     more_temps_p_ex.append(None)
                     more_temps_t_ex.append(None)
-            tab_1.append(info + more_temps_p_ex)
-            tab_2.append(more_temps_t_ex)
+            # if all(x is None for x in more_temps_p_ex)
+            if more_temps_p_ex!=[None]*len(more_temps_t_ex):
+                tab_1.append(info + more_temps_p_ex)
+                tab_2.append(more_temps_t_ex)
 
     tab_1_tab_2_zip = [list(zip(tab_1[x][2:], tab_2[x])) for x in range(len(tab_1))]
     df = pd.DataFrame(data = tab_1_tab_2_zip, columns=PERIOD)
@@ -111,5 +115,5 @@ for comp in progress.bar(sorted(COMPANIES)):
 
     final_res = [tab_1[x]+tab_2[x]+tab_3[x] for x in range(len(tab_1))]
     with open('res.csv', 'a', newline='') as f:
-        writer = csv.writer(f)
+        writer = csv.writer(f, delimiter=';')
         writer.writerows(final_res)
