@@ -7,8 +7,9 @@ from lib.ExcelReader import *
 import re
 
 class Agregate:
-    
-    def __init__(self, file):
+
+    def __init__(self, file, delim_csv):
+        self.delim_csv = delim_csv
         self.data = ExReader(file).res
         self.DATASET = self.data['data']
         self.BASE_CHECK = [re.findall(r'^\s*(.*)\n$',i)[0] for i in list(open('base_check.txt'))]
@@ -26,7 +27,7 @@ class Agregate:
         [special_period.insert(i, 'Amount') for i in range(len(special_period), 0, -1)]
 
         with open('res.csv', 'w', newline='') as f:
-            writer = csv.writer(f, delimiter=';')
+            writer = csv.writer(f, delimiter = self.delim_csv)
             writer.writerows([self.SPECIAL_HAT+self.PERIOD*2+['-','-']+special_period])
 
         for comp in progress.bar(sorted(self.COMPANIES)):
@@ -113,9 +114,11 @@ class Agregate:
                 CPA_check = None
                 for mth_idx, _ in enumerate(self.PERIOD):
                     Terms(slice_dict, df[i], mth_idx, dicter, service_dict[i], self.PERIOD, self.BASE_CHECK).res
+                    # print(dicter)
+                    # print(_)
+                    # input()
                     if df[i][_][1] and (df[i][_][1] == 'Performance' or df[i][_][1].find('Overlimit') != -1):
                         CPA_check = True
-
                 if CPA_check:
                     for m in self.PERIOD:
                         if dicter[m]['type'] != 'Churn CPA':
@@ -128,5 +131,5 @@ class Agregate:
 
             final_res = [tab_1[x]+tab_2[x]+tab_3[x] for x in range(len(tab_1))]
             with open('res.csv', 'a', newline='') as f:
-                writer = csv.writer(f, delimiter=';')
+                writer = csv.writer(f, delimiter=self.delim_csv)
                 writer.writerows(final_res)

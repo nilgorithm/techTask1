@@ -164,6 +164,11 @@ class Terms:
         else:
             self.d[self.period[self.month_idx]]['type'] = 'One-time service'
             self.GetDefinition()
+            if self.month_idx < len(self.period)-1:
+                self.d[self.period[self.month_idx+1]]['type'] = 'One-time service'
+                # print(self.d)
+                # print('ok')
+                # print(self.d[self.period[self.month_idx+1]]['type'])
 
     def GetDefinition(self):
         if self.month_idx-1 < 0:
