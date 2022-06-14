@@ -6,7 +6,7 @@ from clint.textui import progress
 from lib.ExcelReader import *
 import re
 
-class KakaClass:
+class Agregate:
     
     def __init__(self, file):
         self.data = ExReader(file).res
