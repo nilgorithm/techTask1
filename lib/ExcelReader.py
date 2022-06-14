@@ -26,7 +26,7 @@ class ExReader:
         special_hat = fpddata[0][:2]
         hat = fpddata[0]
         period = hat[3:]
-        data = fpddata[1:]
+        data = fpddata[1:20]
         df = pd.DataFrame(data, columns = hat).T.to_dict().values()
         companies = set(map(lambda x : x['Домен'], df))
         counter = set(map(lambda x : x['Форма расчета'], df))

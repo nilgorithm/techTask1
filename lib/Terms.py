@@ -27,7 +27,7 @@ class Terms:
         # print(val_k)
         # print(self.base_check)
         # input()
-        if val_k not in self.base_check+['Performance']:
+        if val_k not in self.base_check:
             # print('поч то тут обосралось')
             # input()
             return False
@@ -44,10 +44,10 @@ class Terms:
         # print('sucsess4')
         # input()
         if len(self.base_sd['base_check'][self.period[self.month_idx]]['service']) == 0:
-            self.d[self.period[self.month_idx]]['type'] = 'Churn Current Client'
+            self.d[self.period[self.month_idx]]['type'] = 'Churn Client'
             self.GetDefinition()
         else:
-            self.d[self.period[self.month_idx]]['type'] = 'Churn Current Service' 
+            self.d[self.period[self.month_idx]]['type'] = 'Churn Service'
             self.GetDefinition()
 
 
@@ -56,7 +56,7 @@ class Terms:
         if self.month_idx-1 < 0:
             return False
         val_k = self.data[self.period[self.month_idx]][1]
-        if val_k not in self.base_check+['Performance']:
+        if val_k not in self.base_check:
             return False
         val = self.data[self.period[self.month_idx]][0]
         prev_val = self.data[self.period[self.month_idx-1]][0]
@@ -66,30 +66,47 @@ class Terms:
             return False
         vals = 0
         vals_k_check = 0
-        start = self.month_idx - 6 if self.month_idx - 6 > 0 else 0
+        start = self.month_idx - 6 if self.month_idx - 6 >= 0 else 0
         for month in self.period[start:self.month_idx]:
-            vals += len([ i for i in self.base_sd['base_check'][month].keys() if i != 'service'])
+            vals += len(self.base_sd['base_check'][month]['service'])
+            # print('\n')
+            # print(self.base_sd['base_check'][month]['service'])
+            # print(len(self.base_sd['base_check'][month]['service']))
+            # print('\n')
             for service in set(self.base_sd['base_check'][month]['service']):
                 if service == self.current_service:
                     vals_k_check +=1
-        if vals_k_check == 0:
-            if vals > 0:
-                if len(self.base_sd['base_check'][self.period[self.month_idx-1]].keys()) <=1:
-                    self.d[self.period[self.month_idx]]['type'] = 'Client Return'
-                    self.GetDefinition()
-
-                else: 
-                    self.d[self.period[self.month_idx]]['type'] = 'New Service'
-                    self.GetDefinition()
-
-            else:
-                self.d[self.period[self.month_idx]]['type'] = 'New Client'
+        # print('месяц', self.period[self.month_idx])
+        # print('диапазон', self.period[start:self.month_idx])
+        # print('проверяемая услуга: ',self.current_service)
+        # print('эта услуга в прошлом: ',vals_k_check)
+        # print('другие в прошлом: ',vals)
+        # print(self.base_sd)
+        # input()
+        if vals > 0:
+            if vals_k_check == 0:            
+                self.d[self.period[self.month_idx]]['type'] = 'New Service'
                 self.GetDefinition()
-
-        else:
-            if vals > 0 and len(self.base_sd['base_check'][self.period[self.month_idx-1]].keys())>1:
+                # print('New Service')
+                # input()
+            elif len(self.base_sd['base_check'][self.period[self.month_idx-1]]['service'])>0:
                 self.d[self.period[self.month_idx]]['type'] = 'Service Return'
                 self.GetDefinition()
+                # print('Service Return')
+                # input()
+            else:
+                self.d[self.period[self.month_idx]]['type'] = 'Client Return'
+                self.GetDefinition()
+                # print('Client Return')
+                # input()
+        else:
+            self.d[self.period[self.month_idx]]['type'] = 'New Client'
+            self.GetDefinition()
+            # print('New Client')
+            # input()
+
+
+            
 
         
         # Поднятие чека 
@@ -159,7 +176,7 @@ class Terms:
         
 
     def resulter(self):
-        for f in [self.Churn_Current_Service_Client, self.New_Service_Client, self.Churn_CPA, self.New_Service_Client, self.Raise_Fix, self.One_time_service, self.GetDefinition]:
+        for f in [self.Churn_Current_Service_Client, self.New_Service_Client, self.Churn_CPA, self.Raise_Fix, self.One_time_service, self.GetDefinition]:
             tmp = f()
             if tmp:
                 break
