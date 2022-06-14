@@ -26,7 +26,7 @@ class KakaClass:
         [special_period.insert(i, 'Amount') for i in range(len(special_period), 0, -1)]
 
         with open('res.csv', 'w', newline='') as f:
-            writer = csv.writer(f, delimiter=',')
+            writer = csv.writer(f, delimiter=';')
             writer.writerows([self.SPECIAL_HAT+self.PERIOD*2+['-','-']+special_period])
 
         for comp in progress.bar(sorted(self.COMPANIES)):
@@ -128,5 +128,5 @@ class KakaClass:
 
             final_res = [tab_1[x]+tab_2[x]+tab_3[x] for x in range(len(tab_1))]
             with open('res.csv', 'a', newline='') as f:
-                writer = csv.writer(f, delimiter=',')
+                writer = csv.writer(f, delimiter=';')
                 writer.writerows(final_res)
