@@ -1,8 +1,8 @@
-from constants import BASE_CHECK, PERIOD
+
 
 class Terms:
 
-    def __init__(self, base_sd, data, month_idx, d, current_service):
+    def __init__(self, base_sd, data, month_idx, d, current_service, PERIOD, BASE_CHECK):
         self.base_sd = base_sd
         self.data = data
         self.month_idx = month_idx
@@ -155,7 +155,7 @@ class Terms:
         val = curr_val_check if curr_val_check else 0
         prev_check = self.data[self.period[self.month_idx-1]][0]
         prev_val = prev_check if prev_check else 0 
-        self.d[self.period[self.month_idx]]['amount'] = val - prev_val if val - prev_val !=0 else '-'
+        self.d[self.period[self.month_idx]]['amount'] = val - prev_val if prev_check or curr_val_check else  '-'
         
 
     def resulter(self):

@@ -1,7 +1,7 @@
-from constants import pd, PERIOD
+import pandas as pd
 class Company:
 
-    def __init__(self, name:str):
+    def __init__(self, name:str, PERIOD):
         self.name = name # super_dict k
         self.kept_data = {} # super_dict v
         self.dalphabet = {chr(lowercase):chr(lowercase+(ord('A')-ord('a'))) for lowercase in range(ord("a"), ord("z")+1)} 
