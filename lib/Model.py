@@ -111,18 +111,18 @@ class Agregate:
             
             for i in range(len(tab_1)):
                 dicter = {m:{'type':'No Changes', 'amount':'-'} for m in self.PERIOD}
-                CPA_check = None
+                # CPA_check = None
                 for mth_idx, _ in enumerate(self.PERIOD):
                     Terms(slice_dict, df[i], mth_idx, dicter, service_dict[i], self.PERIOD, self.BASE_CHECK).res
                     # print(dicter)
                     # print(_)
                     # input()
-                    if df[i][_][1] and (df[i][_][1] == 'Performance' or df[i][_][1].find('Overlimit') != -1):
-                        CPA_check = True
-                if CPA_check:
-                    for m in self.PERIOD:
-                        if dicter[m]['type'] != 'Churn CPA':
-                            dicter[m]['type'] = 'CPA'
+                #     if df[i][_][1] and (df[i][_][1] == 'Performance' or df[i][_][1].find('Overlimit') != -1):
+                #         CPA_check = True
+                # if CPA_check:
+                #     for m in self.PERIOD:
+                #         if dicter[m]['type'] != 'Churn CPA':
+                #             dicter[m]['type'] = 'CPA'
                 temp = []
                 for m in self.PERIOD:
                     temp.append(dicter[m]['type'])
