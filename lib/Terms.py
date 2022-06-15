@@ -2,8 +2,9 @@
 
 class Terms:
 
-    def __init__(self, base_sd, data, month_idx, d, current_service, PERIOD, BASE_CHECK):
+    def __init__(self, base_sd, data, month_idx, d, current_service, PERIOD, BASE_CHECK, changes_names):
         self.base_sd = base_sd
+        self.changes_names = changes_names
         self.data = data
         self.month_idx = month_idx
         self.d = d
@@ -44,10 +45,10 @@ class Terms:
         # print('sucsess4')
         # input()
         if len(self.base_sd['base_check'][self.period[self.month_idx]]['service']) == 0:
-            self.d[self.period[self.month_idx]]['type'] = 'Churn Client'
+            self.d[self.period[self.month_idx]]['type'] = self.changes_names['Churn Client']
             self.GetDefinition()
         else:
-            self.d[self.period[self.month_idx]]['type'] = 'Churn Service'
+            self.d[self.period[self.month_idx]]['type'] = self.changes_names['Churn Service']
             self.GetDefinition()
 
 
@@ -85,29 +86,25 @@ class Terms:
         # input()
         if vals > 0:
             if vals_k_check == 0:            
-                self.d[self.period[self.month_idx]]['type'] = 'New Service'
+                self.d[self.period[self.month_idx]]['type'] = self.changes_names['New Service']
                 self.GetDefinition()
                 # print('New Service')
                 # input()
             elif len(self.base_sd['base_check'][self.period[self.month_idx-1]]['service'])>0:
-                self.d[self.period[self.month_idx]]['type'] = 'Service Return'
+                self.d[self.period[self.month_idx]]['type'] = self.changes_names['Service Return']
                 self.GetDefinition()
                 # print('Service Return')
                 # input()
             else:
-                self.d[self.period[self.month_idx]]['type'] = 'Client Return'
+                self.d[self.period[self.month_idx]]['type'] = self.changes_names['Client Return']
                 self.GetDefinition()
                 # print('Client Return')
                 # input()
         else:
-            self.d[self.period[self.month_idx]]['type'] = 'New Client'
+            self.d[self.period[self.month_idx]]['type'] = self.changes_names['New Client']
             self.GetDefinition()
             # print('New Client')
             # input()
-
-
-            
-
         
         # Поднятие чека 
     def Raise_Fix(self):
@@ -122,22 +119,24 @@ class Terms:
         if not prev_val or not val:
             return False
         if prev_val > val:
-            self.d[self.period[self.month_idx]]['type'] = 'Reduce Fix'
+            self.d[self.period[self.month_idx]]['type'] = self.changes_names['Reduce Fix']
             self.GetDefinition()
         elif prev_val < val:
-            self.d[self.period[self.month_idx]]['type'] = 'Raise Fix'
+            self.d[self.period[self.month_idx]]['type'] = self.changes_names['Raise Fix']
             self.GetDefinition()
 
 
 
     def Churn_CPA(self):
+        # print('kaka')
+        # input()
         if self.month_idx-1 < 0:
             return False
         val_k = self.data[self.period[self.month_idx]][1]
         if not val_k:
             return False
         if val_k.find('Overlimit') !=-1:
-            self.d[self.period[self.month_idx]]['type'] = 'CPA'
+            self.d[self.period[self.month_idx]]['type'] = self.changes_names['CPA']
             self.GetDefinition()
         elif val_k == 'Performance':
             start = self.month_idx - 3 if self.month_idx - 3 > 0 else 0
@@ -145,12 +144,13 @@ class Terms:
             for month in self.period[start:self.month_idx]:
                 if self.data[month][1] == 'Performance':
                     pvals += self.data[month][0]
-            if pvals/len(self.period[start:self.month_idx])/2 > self.data[self.period[self.month_idx]][0]:
-                self.d[self.period[self.month_idx]]['type'] = 'Churn CPA'
-                self.GetDefinition()
-            else:
-                self.d[self.period[self.month_idx]]['type'] = 'CPA'
-                self.GetDefinition()
+            if self.d[self.period[self.month_idx]]['type'] == 'No Changes':
+                if pvals/len(self.period[start:self.month_idx])/2 > self.data[self.period[self.month_idx]][0]:
+                    self.d[self.period[self.month_idx]]['type'] = self.changes_names['Churn CPA']
+                    self.GetDefinition()
+                else:
+                    self.d[self.period[self.month_idx]]['type'] = self.changes_names['CPA']
+                    self.GetDefinition()
 
 
     def One_time_service(self):
@@ -162,10 +162,10 @@ class Terms:
         if val_k.find('Validation') == -1:
             return False
         else:
-            self.d[self.period[self.month_idx]]['type'] = 'One-time service'
+            self.d[self.period[self.month_idx]]['type'] = self.changes_names['One-time service']
             self.GetDefinition()
             if self.month_idx < len(self.period)-1:
-                self.d[self.period[self.month_idx+1]]['type'] = 'One-time service'
+                self.d[self.period[self.month_idx+1]]['type'] = self.changes_names['One-time service']
                 # print(self.d)
                 # print('ok')
                 # print(self.d[self.period[self.month_idx+1]]['type'])
@@ -181,7 +181,7 @@ class Terms:
         
 
     def resulter(self):
-        for f in [self.Churn_Current_Service_Client, self.New_Service_Client, self.Churn_CPA, self.Raise_Fix, self.One_time_service, self.GetDefinition]:
+        for f in [self.Churn_Current_Service_Client, self.New_Service_Client, self.Raise_Fix, self.One_time_service, self.GetDefinition, self.Churn_CPA]:
             tmp = f()
             if tmp:
                 break

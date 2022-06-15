@@ -1,0 +1,12 @@
+Churn Client = Churn Client
+One-time service = One-time service
+CPA = CPA
+Churn CPA = Churn CPA
+Raise Fix = Raise Fix
+Reduce Fix = Reduce Fix
+New Client = New Client
+Client Return = Client Return
+New Service = New Service
+Service Return = Service Return
+Churn Service = Churn Service
+Churn Client = Churn Client

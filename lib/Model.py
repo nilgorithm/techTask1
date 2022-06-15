@@ -9,10 +9,11 @@ import re
 class Agregate:
 
     def __init__(self, file, delim_csv):
+        self.changes_names = {i[0][0]:i[0][2]  for i in [re.findall(r'^\s*?([\w\-\s]*[\w])([\s\=]*)(.*)\n$',i) for i in list(open(r'.\files\changes_names.txt'))]}
         self.delim_csv = delim_csv
         self.data = ExReader(file).res
         self.DATASET = self.data['data']
-        self.BASE_CHECK = [re.findall(r'^\s*(.*)\n$',i)[0] for i in list(open('base_check.txt'))]
+        self.BASE_CHECK = [re.findall(r'^\s*(.*)\n$',i)[0] for i in list(open(r'.\files\base_check.txt'))]
         self.PERIOD = self.data['period']
         self.SPECIAL_HAT = self.data['special_hat']
         self.COMPANIES = self.data['companies']
@@ -113,7 +114,8 @@ class Agregate:
                 dicter = {m:{'type':'No Changes', 'amount':'-'} for m in self.PERIOD}
                 # CPA_check = None
                 for mth_idx, _ in enumerate(self.PERIOD):
-                    Terms(slice_dict, df[i], mth_idx, dicter, service_dict[i], self.PERIOD, self.BASE_CHECK).res
+                    Terms(slice_dict, df[i], mth_idx, dicter, service_dict[i], self.PERIOD, self.BASE_CHECK, self.changes_names).res
+                    
                     # print(dicter)
                     # print(_)
                     # input()
