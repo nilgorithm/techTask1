@@ -138,6 +138,8 @@ class Terms:
         if val_k.find('Overlimit') !=-1:
             self.d[self.period[self.month_idx]]['type'] = self.changes_names['CPA']
             self.GetDefinition()
+            if self.month_idx < len(self.period)-1:
+                self.d[self.period[self.month_idx+1]]['type'] = self.changes_names['CPA']
         elif val_k == 'Performance':
             start = self.month_idx - 3 if self.month_idx - 3 > 0 else 0
             pvals = 0
