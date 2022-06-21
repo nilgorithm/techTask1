@@ -1,6 +1,7 @@
 from lib.Model import Agregate
 
 file = r".\example\ТЗ, макрос от программиста.xlsx"
+# file = r".\example\для матвея (2).xlsx"
 delimiter = ',' #delimiter for csv
 
 # file = r"C:\Users\User\OneDrive\Рабочий стол\RR\отток бизнеса\РБ\отток бизнеса RR.xlsx"

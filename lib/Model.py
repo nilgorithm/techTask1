@@ -1,4 +1,5 @@
 import csv
+from pickle import NONE
 from lib.Terms import *
 from lib.Companize import *
 # from lib.constants import *
@@ -24,7 +25,8 @@ class Agregate:
 
         for i in self.DATASET:
             super_dict[i['Домен']].add_data(pd.Series(i).fillna(False))
-        special_period = [self.PERIOD[i] +' - '+ self.PERIOD[i+1] for i in range(len(self.PERIOD)-1)]
+        # print(self.PERIOD)
+        special_period = [self.PERIOD[i] +' - '+ self.PERIOD[i+1] for i in range(len(self.PERIOD)-1) if self.PERIOD[i+1] and self.PERIOD[i] ]  #if len(self.PERIOD)%2 == 0 else None 
         [special_period.insert(i, 'Amount') for i in range(len(special_period), 0, -1)]
 
         with open('res.csv', 'w', newline='') as f:
